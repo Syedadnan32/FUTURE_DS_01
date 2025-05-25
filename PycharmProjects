@@ -1,0 +1,31 @@
+# Import pandas
+from pandas import read_csv
+
+# Load the CSV file
+df = read_csv('/Users/syedadnan1870gmail.com/Downloads/sentimentdataset.csv')  # Change the file name or path as needed
+
+# Display the first 5 rows
+print(df.head())
+#Text Preprocessing (NLP)
+import re
+# Lowercase and clean text
+df["Clean_Text"] = df["Text"].str.lower()
+df["Clean_Text"] = df["Clean_Text"].apply(lambda x: re.sub(r"[^a-zA-Z0-9\s#@]","", x))
+
+# Sentiment Analysis (TextBlob)
+from textblob import TextBlob
+
+def get_sentiment(text):
+    polarity = TextBlob(text).sentiment.polarity
+    if polarity > 0:
+        return "Positive"
+    elif polarity < 0:
+        return "Negative"
+    else:
+        return "Neutral"
+
+df["Sentiment"] = df["Clean_Text"].apply(get_sentiment)
+
+
+#Export to Excel for Dashboarding
+df.to_excel("sentiment_analysis_output.xlsx", index=False)
